@@ -92,3 +92,19 @@ exports.checkStatus = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.checkGroupMembers = async (req, res) => {
+  try {
+    const { orderId } = req.body;
+    const group = await Group.find({orderId: orderId});
+    const members = []
+    for (const key in group.members) {
+      const element = object[key];
+      members.push(await User.findById(element));
+    }
+
+    res.json({ members: members });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
