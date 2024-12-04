@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
-  passwordHash: String,
+  password: String,
   qrCode: String,
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   paymentMethods: [
@@ -15,9 +15,9 @@ const userSchema = new mongoose.Schema({
   ],
 }, { timestamps: true });
 
-// Método para validar senha
-userSchema.methods.validatePassword = function (password) {
-  return bcrypt.compare(password, this.passwordHash);
-};
+// Mï¿½todo para validar senha
+// userSchema.methods.validatePassword = function (password) {
+//   return bcrypt.compare(password, this.passwordHash);
+// };
 
 module.exports = mongoose.model('User', userSchema);

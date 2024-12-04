@@ -10,9 +10,11 @@ exports.createOrder = async (req, res) => {
     const { restaurantId, totalAmount } = req.body;
     const order = await Order.create({ restaurantId, totalAmount });
     const qrCode = qr.imageSync(`order:${order._id}:${restaurantId}:${totalAmount}`, { type: 'svg' });
+    const accessCode = (Math.random() + 1).toString(36).substring(6);
     order.qrCode = qrCode;
+    order.accessCode = accessCode;
     order.save();
-    res.json({ orderId: order._id, qrCode: qrCode.toString('base64') });
+    res.json({ orderId: order._id, orderAccessCode: order.accessCode, qrCode: qrCode.toString('base64') });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -23,6 +25,18 @@ exports.scanQrCode = async (req, res) => {
   try {
     const { orderId } = req.body;
     const order = await Order.findById(new mongo.ObjectId(orderId));
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Escaneamento do Pedido pelo Codigo
+exports.scanOrderByAccessCode = async (req, res) => {
+  try {
+    const { accessCode } = req.body;
+    const order = await Order.findOne({accessCode});
     if (!order) return res.status(404).json({ message: 'Order not found' });
     res.json(order);
   } catch (err) {
