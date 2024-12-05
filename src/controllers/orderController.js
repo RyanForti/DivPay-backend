@@ -20,6 +20,25 @@ exports.createOrder = async (req, res) => {
   }
 };
 
+exports.checkGroupMembers = async (req, res) => {
+  try {
+    const { orderId } = req.body;
+    // const group = await Group.find({orderId: orderId});
+    const group = await Group.findOne({orderId: orderId});
+    if (!group) {
+      return res.status(404).json({ error: 'Grupo não encontrado' });
+    }
+    const members = await Promise.all(
+      group.members.map(memberId => 
+        User.findById(memberId, '_id name') // Supondo que você só quer o `id` e `name`
+      )
+    );
+    res.json({ members });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 // Escaneamento do QR Code
 exports.scanQrCode = async (req, res) => {
   try {

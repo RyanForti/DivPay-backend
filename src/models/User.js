@@ -5,14 +5,7 @@ const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   password: String,
-  qrCode: String,
-  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  paymentMethods: [
-    {
-      type: { type: String },
-      details: mongoose.Schema.Types.Mixed,
-    },
-  ],
+  type: { type: String, enum: ['restaurant', 'consumer'], default: 'consumer' },
 }, { timestamps: true });
 
 // M�todo para validar senha
