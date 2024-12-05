@@ -13,7 +13,7 @@ exports.login = async (req, res) => {
     }
     //const token = jwt.sign({ userId: user._id }, 'your-secret-key', { expiresIn: '1h' });
     //res.json({ token });
-    res.jons({userId: user._id});
+    res.jons({userId: user._id, userType: user.type});
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
